@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Bingo</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<link rel="shortcut icon" href="/static/favicon.ico" type="image/ico" />
+<link rel="stylesheet" href="/css/pure-min.css">
+<link rel="stylesheet" href="/css/stylesheet.css">
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type='text/javascript' src="/js/js.js"></script>
+<body onload='initialize_landingpage()'>
+<form class="pure-form pure-form-aligned">
+    <fieldset>
+        {{ LOGIN }}
+        <br><hr>
+        <h3>join existing game</h3>
+        <div class="pure-controls">
+            <select id='game_list' oninput="update_game_description($('#game_list').val())" size="5" style='height:150px;width:100px;' required='false'>
+            {%- for val in GAME_LIST %}
+            <option value="{{ val }}">{{ val }}</option>
+            {%- endfor %}
+            </select>
+            <textbox id="textbox_game_description" class="textbox-game-description"></textbox>
+        </div>
+        <div class="pure-controls">
+            <button id="join" type="submit" class="pure-button pure-button-primary" value='join'
+            onClick='click_join_game($("#game_list").val()); return false'>Join</button>
+        </div>
+        <br><hr>
+        <h3>create new game</h3>
+        <div class="pure-control-group">
+            <label for="name">Title</label>
+            <input class="index-page-textbox" type='textbox' id='title' value='' />
+            <span class="pure-form-message-inline">Enter the name of this game.</span>
+        </div>
+        <div class="pure-control-group">
+            <label for="name">Wordlist</label>
+            <select id='wordlist_id' required=true oninput="update_wordlist_textarea($('#wordlist_id').val())" >
+                {%- for val in WORDLIST_IDS %}
+                <option value="{{ val }}">{{ val }}</option>
+                {% endfor %}
+            </select>
+            <span class="pure-form-message-inline">The wordlist to use.</span>
+        </div>
+        <div class="pure-controls">
+            <label for="remember" class="pure-checkbox">
+                <input id="check_duplicates" type="checkbox" checked> Check for duplicates</input>
+            </label>
+        </div>
+        <div class="pure-controls">
+            <button id="create_game" type="submit" class="pure-button pure-button-primary" value='Update'
+            onClick='click_create_game($("#title").val(), $("#words").val(), $("#check_duplicates").is(":checked"), $("#player_name").val())'>Create Game</button>
+        </div>
+        <br>
+        <div class="pure-control-group">
+            <label for="name">Words</label>
+            <textarea rows="15" cols="100" id='words'>
+                {%- for word in INITIAL_WORDLIST %}
+{{ word }}
+                {%- endfor %}
+            </textarea>
+        </div>
+    </fieldset>
+</form>
+</body>
+</html>

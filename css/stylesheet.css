@@ -1,0 +1,65 @@
+
+
+.index-page-game-menu {
+    height: 160px;
+    width: 150px;
+    border: 1px solid gray;
+    border-radius: 4px;
+}
+
+.index-page-textbox {
+    height:25px;
+    width:100px;
+}
+
+.textbox-game-description {
+    position:absolute;
+    float:right;
+    margin: 10px;
+}
+
+.button-me {
+    background: rgb(0,128,0); /* this is green */
+    opacity: 0.8;
+    height: 150px;
+    width:150px;
+}
+
+.button-me:hover {
+    background: rgb(34,139,34); /* this is lighter green */
+}
+
+.button-enemy {
+    background: rgb(204, 0, 0); /* this is red */
+    opacity: 0.8;
+    height: 150px;
+    width:150px;
+}
+
+.button-enemy:hover {
+    background: rgb(255, 80, 80); /* this is lighter red */
+}
+
+.button-none {
+    background: rgb(220,220,220); /* this is gray */
+    text-align: center;
+    opacity: 0.8;
+    height: 150px;
+    width:150px;
+}
+
+.button-none:hover {
+    background: rgb(192,192,192); /* this is lighter gray */
+}
+
+.pure-form h1 {
+    margin:1.5em 0 1em 5.5em;
+}
+
+.pure-form h3 {
+    margin:1.5em 0 1em 9.5em;
+}
+
+.pure-form p {
+    margin:1.5em 0 1em 11em;
+}

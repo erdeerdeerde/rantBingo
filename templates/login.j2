@@ -1,0 +1,21 @@
+<form class="pure-form pure-form-aligned">
+    <fieldset>
+        <h3>{{ INFO }}</h3>
+        <div class="pure-control-group">
+            <label for="name">Name</label>
+            <input class="index-page-textbox" type='textbox' id='player_name' value='player1'/>
+            <span class="pure-form-message-inline">Your name.</span>
+        </div>
+        <div class="pure-control-group">
+            <label for="name">Password</label>
+            <input class="index-page-textbox" type='password' id='player_pwd' value='player1' style="width:105px;"/>
+            <span class="pure-form-message-inline">Password, <b>this is NOT stored securely</b></span>
+        </div>
+        <div class="pure-controls">
+            <button id="login" type="submit" class="pure-button pure-button-primary" value="Join"
+            onClick='click_login($("#player_name").val(), $("#player_pwd").val()); return false'>Login</button>
+            <button id="register" type="submit" class="pure-button pure-button-primary" value="Join"
+            onClick='click_register($("#player_name").val(), $("#player_pwd").val()); return false'>Register</button>
+        </div>
+    </fieldset>
+</form>

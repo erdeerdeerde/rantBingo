@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Bingo - {{ GAME }}</title>
+</head>
+<link rel="shortcut icon" href="/static/favicon.ico" type="image/ico" />
+<link rel="stylesheet" href="/css/pure-min.css">
+<link rel="stylesheet" href="/css/stylesheet.css">
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type='text/javascript' src="/js/js.js"></script>
+<body>
+    <script type='text/javascript'>
+        document.addEventListener('DOMContentLoaded', event_listener());
+
+        function event_listener() {
+         var timeSrc  = new EventSource('update_slice');
+         timeSrc.addEventListener('time', function (event) {
+             console.log("\n " + event.data);
+             if ( event.winner ){
+                 console.log(event.winner);
+                 window.location.reload(true);
+                 element.removeEventListener('DOMContentLoaded', event_listener());
+             }
+             if ( event.data == "reload" ){
+                 window.location.reload(true);
+             }
+         });
+       }
+
+    </script>
+
+<div class="pure-controls">
+<h1>Bingo - {{ GAME }} - {{ WELCOME_TEXT }}</h1>
+<table class="card" id="card0" border="1" cellspacing="0">
+{{FIELDS}}
+</table>
+<textbox id="textbox_game_description" class="textbox-game-description">testtest <br>rehusdljs<br>fijoödhfgude<br>ijfoöhddgufdö</textbox>
+</div>
+</body>
+</html>
