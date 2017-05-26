@@ -9,12 +9,14 @@
 <script type="text/javascript" src="/js/jquery.min.js"></script>
 <script type='text/javascript' src="/js/js.js"></script>
 <body>
-    <script type='text/javascript'>
-        document.addEventListener('DOMContentLoaded', event_listener());
+    <script>
+        var websocket = new WebSocket('ws://{{ WEBSOCKET }}');
+        websocket.onopen    = function (evt) { console.log("Connected to WebSocket server."); };
+        websocket.onclose   = function (evt) { console.log("Disconnected"); };
+        websocket.onmessage = function (evt) { event_listener (evt); };
+        websocket.onerror   = function (evt) { console.log('Error occured: ' + evt.data); };
 
-        function event_listener() {
-         var timeSrc  = new EventSource('update_slice');
-         timeSrc.addEventListener('time', function (event) {
+        function event_listener (event) {
              console.log("\n " + event.data);
              if ( event.winner ){
                  console.log(event.winner);
@@ -24,9 +26,7 @@
              if ( event.data == "reload" ){
                  window.location.reload(true);
              }
-         });
-       }
-
+         };
     </script>
 
 <div class="pure-controls">

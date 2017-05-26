@@ -5,6 +5,7 @@ import os
 import sys
 import cherrypy
 from cherrypy.lib import sessions
+from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
 import random
 import signal
 import string
@@ -28,15 +29,6 @@ class Server(object):
         signals=[signal.SIGINT, signal.SIGTERM]
         for s in signals:
             signal.signal(s, self.signal_handler)
-
-
-    @cherrypy.expose
-    def update_slice(self):
-        #Set the expected headers...
-        print "update slice..."
-        cherrypy.response.headers["Content-Type"] = "text/event-stream"
-        print "BAR"
-        return "event: time\n" + "data: " + str(time.time()) + "\n\n";
 
 
     @cherrypy.expose
@@ -236,6 +228,8 @@ conf_index = {
     }
 }
 
+WebSocketPlugin(cherrypy.engine).subscribe()
+cherrypy.tools.websocket = WebSocketTool()
 cherrypy.tree.mount(Server(), '/', config = conf_index)
 cherrypy.engine.start()
 cherrypy.engine.block()

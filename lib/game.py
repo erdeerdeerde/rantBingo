@@ -1,6 +1,11 @@
 from lib.slice import Slice
 from lib.field import Field
 import cherrypy
+from lib.utils import Broadcaster
+
+from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
+cherrypy.tools.websocket = WebSocketTool()
+WebSocketPlugin(cherrypy.engine).subscribe()
 
 class Game():
     def __init__(self, **args):
@@ -12,9 +17,16 @@ class Game():
         self.fields=[]
         self.slices={}
         self.uri="/%s" %self.name
+        self.subscribe_conf={"subscribe": {'tools.websocket.on': True,
+                                           'tools.websocket.handler_cls': Broadcaster}}
+        cherrypy.tree.mount(self, self.uri, config = self.subscribe_conf)
         self.generate_fields()
         self.players={}
         self.winner=None
+
+    @cherrypy.expose
+    def subscribe(self):
+        print "subscribe"
 
     def generate_slice(self, player, env):
         for s in self.slices.values():

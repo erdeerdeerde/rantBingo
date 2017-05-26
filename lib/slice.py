@@ -4,6 +4,7 @@ import cherrypy
 import time
 import lib.utils as utils
 from time import sleep
+from urlparse import urlparse
 
 import pprint
 
@@ -48,26 +49,9 @@ class Slice():
             else:
                 row_index += 1
         tmpl = self.env.get_template('slice.j2')
-        return tmpl.render(GAME=self.Game.name, WELCOME_TEXT=self.name, PLAYER=self.name, FIELDS=fields_string)
-
-
-    @cherrypy.expose
-    def update_slice(self):
-        #Set the expected headers...
-        cherrypy.response.headers["Content-Type"] = "text/event-stream"
-        player=cherrypy.session.get('player')
-        print "update_slice %s reload %s" %(player.name, player.refresh)
-        if self.Game.winner:
-            return "event: time\n" + "data: " + "reload" + "winner:" + self.Game.winner.name + "\n\n";
-        elif player.refresh:
-            player.refresh = False
-            i=0
-            while player.refresh == False and i <= 6:
-                i+=1
-                sleep(0.5)
-            return "event: time\n" + "data: " + "reload" + "\n\n";
-        return "event: time\n" + "data: " + "none" + "\n\n";
-
+        url=urlparse(cherrypy.url())
+        WEBSOCKET = "%s/%s/subscribe" %(url.netloc, self.Game.name)
+        return tmpl.render(GAME=self.Game.name, WELCOME_TEXT=self.name, PLAYER=self.name, FIELDS=fields_string, WEBSOCKET = WEBSOCKET)
 
     def find_field(self):
         field_found=False

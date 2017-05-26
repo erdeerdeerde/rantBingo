@@ -20,7 +20,8 @@ class Field():
         players=self.Game.players
         for player in players.values():
             print "set refresh for %s" %player.name
-            player.refresh=True
+            if player.websocket:
+                player.websocket.send("event: time\n" + "data: " + "reload" + "\n\n")
 
     def check_winning_condition(self):
         player=cherrypy.session.get('player')
