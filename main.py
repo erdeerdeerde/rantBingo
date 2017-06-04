@@ -145,6 +145,9 @@ class Server(object):
         for game in self.games.keys():
             if self.games[game] == name:
                 return False
+
+        wordlist = [i for i in wordlist if i.strip()]
+
         new_game=Game(name=name, wordlist=wordlist, env=self.env)
         self.games[name]=new_game
         return new_game.uri
