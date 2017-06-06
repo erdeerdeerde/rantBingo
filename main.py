@@ -5,7 +5,6 @@ import os
 import sys
 import cherrypy
 from cherrypy.lib import sessions
-from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
 import random
 import signal
 import string
@@ -16,6 +15,7 @@ from lib.game import Game
 from lib.player import Player
 import lib.utils as utils
 import time
+import lib.websocket as websocket
 
 import pprint
 
@@ -150,6 +150,13 @@ class Server(object):
 
         new_game=Game(name=name, wordlist=wordlist, env=self.env)
         self.games[name]=new_game
+        cherrypy.tree.mount(websocket.Ws(), new_game.uri, {
+                               '/subscribe' : {
+                                 'tools.websocket.on'          : True,
+                                 'tools.websocket.handler_cls' : websocket.Subscribe
+                               }
+                             })
+        cherrypy.engine.signals.subscribe()
         return new_game.uri
 
 
@@ -231,8 +238,7 @@ conf_index = {
     }
 }
 
-WebSocketPlugin(cherrypy.engine).subscribe()
-cherrypy.tools.websocket = WebSocketTool()
+websocket.init_websocket()
 cherrypy.tree.mount(Server(), '/', config = conf_index)
 cherrypy.engine.start()
 cherrypy.engine.block()

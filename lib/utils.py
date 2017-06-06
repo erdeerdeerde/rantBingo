@@ -10,13 +10,3 @@ def auth(self, session):
    else:
        return False
 
-class Broadcaster(WebSocket):
-    def __init__(self, *args, **kw):
-        WebSocket.__init__(self, *args, **kw)
-        player=cherrypy.session.get('player')
-        player.websocket=self
-        print "add websocket to player %s" %player.name
-
-    def closed(self, code, reason=None):
-        player=cherrypy.session.get('player')
-        player.websocket=None
