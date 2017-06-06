@@ -6,7 +6,6 @@ class Player():
         self.secret=args.get("secret")
         # holds the slices of a player with to corresponding game as key
         self.slices={}
-        self.refresh=False
         self.websocket=None
         self.score=0
 

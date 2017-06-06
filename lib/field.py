@@ -11,17 +11,16 @@ class Field():
 
     def check_field(self, player):
         self.checker.append(player)
-        player.refresh = True
         if self.check_winning_condition() and not self.Game.winner:
             self.Game.winner=player
         self.broadcast_change()
 
     def broadcast_change(self):
-        players=self.Game.players
-        for player in players.values():
-            print "set refresh for %s" %player.name
-            if player.websocket:
-                player.websocket.send("reload")
+        for Slice in self.owner:
+            for player in Slice.players.values():
+                if player.websocket:
+                    print "broadcast refresh to %s" %player.name
+                    player.websocket.send("reload")
 
     def check_winning_condition(self):
         player=cherrypy.session.get('player')

@@ -33,13 +33,7 @@ class Slice():
         fields_string = ""
         row_index=0
         for field in self.fields:
-            if field.checker == self:
-                checked="me"
-            elif len(field.checker) > 0:
-                checked="enemy"
-            else:
-                checked="none"
-
+            checked=self.find_colour(field)
             if row_index == 0:
                 fields_string = fields_string + "<tr>"
             fields_string = fields_string + field_template.render(WORD=field.word, WORD_ID=field.word_id, PLAYER=self.name, GAME=self.Game.name, CHECKED=checked)
@@ -52,6 +46,14 @@ class Slice():
         url=urlparse(cherrypy.url())
         WEBSOCKET = "%s/%s/subscribe" %(url.netloc, self.Game.name)
         return tmpl.render(GAME=self.Game.name, WELCOME_TEXT=self.name, PLAYER=self.name, FIELDS=fields_string, WEBSOCKET = WEBSOCKET)
+
+    def find_colour(self, field):
+        if len(field.checker) > 0:
+            for player in self.players.values():
+                if player == field.checker[0]:
+                    return "me"
+            return "enemy"
+        return "none"
 
     def find_field(self):
         field_found=False
