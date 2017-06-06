@@ -29,7 +29,12 @@ class Slice():
     def index(self):
         if not utils.auth(self, cherrypy.session):
             raise cherrypy.HTTPRedirect("/login")
-        field_template = self.env.get_template('field.j2')
+        if self.Game.winner:
+            field_template = self.env.get_template('field_disabled.j2')
+            WELCOME_TEXT="And the Winner is: %s" %self.Game.winner.name
+        else:
+            field_template = self.env.get_template('field.j2')
+            WELCOME_TEXT=self.name
         fields_string = ""
         row_index=0
         for field in self.fields:
@@ -45,7 +50,7 @@ class Slice():
         tmpl = self.env.get_template('slice.j2')
         url=urlparse(cherrypy.url())
         WEBSOCKET = "%s/%s/subscribe" %(url.netloc, self.Game.name)
-        return tmpl.render(GAME=self.Game.name, WELCOME_TEXT=self.name, PLAYER=self.name, FIELDS=fields_string, WEBSOCKET = WEBSOCKET)
+        return tmpl.render(GAME=self.Game.name, WELCOME_TEXT=WELCOME_TEXT, PLAYER=self.name, FIELDS=fields_string, WEBSOCKET = WEBSOCKET)
 
     def find_colour(self, field):
         if len(field.checker) > 0:

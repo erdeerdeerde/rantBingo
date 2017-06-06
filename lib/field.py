@@ -11,7 +11,7 @@ class Field():
 
     def check_field(self, player):
         self.checker.append(player)
-        if self.check_winning_condition() and not self.Game.winner:
+        if self.check_winning_condition(player) and not self.Game.winner:
             self.Game.winner=player
         self.broadcast_change()
 
@@ -22,47 +22,40 @@ class Field():
                     print "broadcast refresh to %s" %player.name
                     player.websocket.send("reload")
 
-    def check_winning_condition(self):
-        player=cherrypy.session.get('player')
+    def check_winning_condition(self, player):
         Slice=self.Game.slices[player.name]
         size=Slice.size
         row_length=Slice.row_length
         pos=Slice.fields.index(self)
-        # check for vertical fails
         check_index=pos
 
-        while check_index - row_length >= 0:
-            field=Slice.fields[check_index - row_length]
-            if len(field.checker) == 0:
-                return False
-            if field.checker[0] != player:
-                return False
-            check_index=check_index - row_length
-        check_index=pos
-        while check_index + row_length < size:
-            field=Slice.fields[check_index + row_length]
-            if len(field.checker) == 0:
-                return False
-            if len(field.checker) > 0 and field.checker[0] != player:
-                return False
-            check_index=check_index + row_length
-        # check for horizontal fails
-        check_index=pos
-        while check_index - 1 >= 0:
-            field=Slice.fields[check_index - 1]
-            if len(field.checker) == 0:
-                return False
-            if len(field.checker) > 0 and field.checker[0] != player:
-                return False
-            check_index=check_index - 1
-        check_index=pos
-        while check_index + row_length < size:
-            field=Slice.fields[check_index + 1]
-            if len(field.checker) == 0:
-                return False
-            if len(field.checker) > 0 and field.checker[0] != player:
-                return False
-            check_index=check_index + 1
+        found_cond=False
 
-        self.Game.winner = player
-        return True
+        #horizontal:
+        line=pos/row_length
+        start=line*row_length
+        end=line*row_length+row_length
+        for field in range(start, end):
+            if len(Slice.fields[field].checker) > 0 and player == Slice.fields[field].checker[0]:
+                found_cond=True
+            else:
+                found_cond=False
+                break
+
+        if found_cond:
+            self.Game.winner = player
+            return found_cond
+
+        #vertical:
+        row=pos%row_length
+        start=row
+        end=(size-row_length)+row
+        for field in range(start, end+1, row_length):
+            if len(Slice.fields[field].checker) > 0 and player == Slice.fields[field].checker[0]:
+                found_cond=True
+            else:
+                found_cond=False
+                break
+
+
+        return found_cond
