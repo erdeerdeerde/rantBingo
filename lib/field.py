@@ -13,14 +13,21 @@ class Field():
         self.checker.append(player)
         if self.check_winning_condition(player) and not self.Game.winner:
             self.Game.winner=player
-        self.broadcast_change()
+            self.broadcast_change(everyone=True)
+        else:
+            self.broadcast_change()
 
-    def broadcast_change(self):
-        for Slice in self.owner:
-            for player in Slice.players.values():
-                if player.websocket:
-                    print "broadcast refresh to %s" %player.name
-                    player.websocket.send("reload")
+    def broadcast_change(self, everyone=False):
+        if everyone:
+            for player in self.Game.players.values():
+                print "broadcast refresh to %s" %player.name
+                player.websocket.send("reload")
+        else:
+            for Slice in self.owner:
+                for player in Slice.players.values():
+                    if player.websocket:
+                        print "broadcast refresh to %s" %player.name
+                        player.websocket.send("reload")
 
     def check_winning_condition(self, player):
         Slice=self.Game.slices[player.name]
@@ -43,7 +50,6 @@ class Field():
                 break
 
         if found_cond:
-            self.Game.winner = player
             return found_cond
 
         #vertical:
