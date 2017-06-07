@@ -26,9 +26,6 @@ class Server(object):
         self.games={}
         self.players=self.load_players()
         self.wordlists = self.get_wordlist()
-        signals=[signal.SIGINT, signal.SIGTERM]
-        for s in signals:
-            signal.signal(s, self.signal_handler)
 
 
     @cherrypy.expose
@@ -90,6 +87,7 @@ class Server(object):
                 new_player=Player(name=player, secret=secret)
                 self.players[player] = new_player
                 cherrypy.session.__setitem__("player", self.players[player])
+                self.save_players()
                 return self.craft_response({"mode": "success", "message": "Player created"})
 
         elif body["mode"] == "join_as_spectator":
@@ -202,11 +200,6 @@ class Server(object):
             with open('wordlists/' + f, 'rb') as afile:
                 return_dict[f] = afile.read().decode('utf8').splitlines()
         return return_dict
-
-
-    def signal_handler(self, signal, frame):
-        self.save_players()
-        sys.exit(0)
 
 
 
