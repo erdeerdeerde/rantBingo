@@ -10,12 +10,21 @@ class Field():
         self.checker=[]
 
     def check_field(self, player):
-        self.checker.append(player)
+        if not player in self.checker:
+            self.checker.append(player)
+        else:
+            return
+        self.add_points(player)
         if self.check_winning_condition(player) and not self.Game.winner:
             self.Game.winner=player
             self.broadcast_change(everyone=True)
         else:
             self.broadcast_change()
+
+    def add_points(self, player):
+        position=self.checker.index(player)
+        Slice=self.Game.slices[player]
+        Slice.score += 5-position
 
     def broadcast_change(self, everyone=False):
         if everyone:

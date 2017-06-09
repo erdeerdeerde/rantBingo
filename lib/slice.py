@@ -12,7 +12,7 @@ import pprint
 class Slice():
 
     def __init__(self, **args):
-        player=args.get("player")
+        self.player=args.get("player")
         self.name=player.name
         self.Game=args.get("Game")
         self.size=args.get("size", 25)
@@ -23,6 +23,7 @@ class Slice():
         self.map_fields()
         self.players={player.name: player}
         self.winning_condition=False
+        self.score=0
 
 
     @cherrypy.expose
