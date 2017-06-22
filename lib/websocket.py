@@ -2,7 +2,6 @@ import cherrypy
 from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
 from ws4py.websocket import WebSocket
 
-
 class Ws:
 
   @cherrypy.expose
@@ -16,13 +15,14 @@ class Subscribe(WebSocket):
     player.websocket=self
     print "add websocket to player %s" %player.name
 
-  def closed(self, code, reason=None):
+  def close(self, code, reason=None):
     player=cherrypy.session.get('player')
     player.websocket=None
     print "remove websocket from player %s" %player.name
 
   def received_message(self, message):
-    self.send('you are not supposed to send messages.')
+    if message.data == '--ping--':
+        self.send('--pong--')
 
 def init_websocket():
   cherrypy.tools.websocket = WebSocketTool()

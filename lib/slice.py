@@ -13,7 +13,7 @@ class Slice():
 
     def __init__(self, **args):
         self.player=args.get("player")
-        self.name=player.name
+        self.name=self.player.name
         self.Game=args.get("Game")
         self.size=args.get("size", 25)
         self.row_length=5
@@ -21,7 +21,7 @@ class Slice():
         self.fields=[]
         self.uri="%s/%s" %(self.Game.name, self.name)
         self.map_fields()
-        self.players={player.name: player}
+        self.players={self.player.name: self.player}
         self.winning_condition=False
         self.score=0
 

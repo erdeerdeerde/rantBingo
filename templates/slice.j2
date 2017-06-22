@@ -11,13 +11,39 @@
 <body>
     <script>
         var websocket = new WebSocket('ws://{{ WEBSOCKET }}');
-        websocket.onopen    = function (evt) { console.log("Connected to WebSocket server."); };
-        websocket.onclose   = function (evt) { console.log("Disconnected"); };
+        websocket.onopen    = function (evt) { on_open(); };
+        websocket.onclose   = function (evt) { console.log("Websocket disconnected"); };
         websocket.onmessage = function (evt) { event_listener (evt); };
-        websocket.onerror   = function (evt) { console.log('Error occured: ' + evt.data); };
+        websocket.onerror   = function (evt) { console.log('Websocket error occured: ' + evt.data); };
+        var heartbeat_msg_send = '--ping--', heartbeat_msg_recv = '--pong--', heartbeat_interval = null, missed_heartbeats = 0;
+
+        function on_open() {
+            console.log("Connected to WebSocket server.");
+            if (heartbeat_interval === null) {
+                missed_heartbeats = 0;
+                heartbeat_interval = setInterval(function() {
+                    try {
+                        missed_heartbeats++;    // this gets resetted to zero whenever a pong is received from the server
+                        if (missed_heartbeats >= 4)
+                            throw new Error("Too many missed heartbeats.");
+                        websocket.send(heartbeat_msg_send);
+                    } catch(e) {
+                        clearInterval(heartbeat_interval);
+                        heartbeat_interval = null;
+                        console.warn("Closing WebSocket connection. Reason: " + e.message);
+                        websocket.close();
+                    }
+                }, 5000);
+            }
+        }
 
         function event_listener (event) {
              console.log("\n " + event.data);
+             if (event.data === heartbeat_msg_recv) {
+                 // reset the counter for missed heartbeats
+                 missed_heartbeats = 0;
+                 return;
+             }
              if ( event.winner ){
                  console.log(event.winner);
                  window.location.reload(true);
@@ -28,7 +54,6 @@
              }
          };
     </script>
-
 <div class="pure-controls">
 <h1>Bingo - {{ GAME }} - {{ WELCOME_TEXT }}</h1>
 <table class="card" id="card0" border="1" cellspacing="0">
