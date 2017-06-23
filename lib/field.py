@@ -1,5 +1,7 @@
-
 import cherrypy
+import os.path
+if os.path.isfile("/home/ops/dashboardctl/dashboardctl"):
+    import subprocess
 
 class Field():
     def __init__(self, **args):
@@ -8,11 +10,18 @@ class Field():
         self.Game=args.get("Game")
         self.owner = []
         self.checker=[]
+        if os.path.isfile("/home/ops/dashboardctl/dashboardctl"):
+            self.dashboardctl="/home/ops/dashboardctl/dashboardctl"
+        else:
+            self.dashboardctl=None
 
     def check_field(self, player):
         if not player in self.checker:
             self.checker.append(player)
             self.word = self.word + "\n#" + player.name
+            if self.dashboardctl:
+                pass
+                #subprocess.call([self.dashboardctl, "bingo", "http://opsnuc.adition:9090/" + self.Game.slices[player.name].uri])
         else:
             return
         self.add_points(player)
