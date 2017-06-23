@@ -17,6 +17,12 @@
         websocket.onerror   = function (evt) { console.log('Websocket error occured: ' + evt.data); };
         var heartbeat_msg_send = '--ping--', heartbeat_msg_recv = '--pong--', heartbeat_interval = null, missed_heartbeats = 0;
 
+        //reload every 60 seconds
+        setInterval(function() {
+            console.log('reloading');
+            window.location.reload(true);
+        }, 60000);
+
         function on_open() {
             console.log("Connected to WebSocket server.");
             if (heartbeat_interval === null) {
