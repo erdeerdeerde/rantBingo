@@ -36,18 +36,9 @@ class Slice():
         else:
             field_template = self.env.get_template('field.j2')
             WELCOME_TEXT=self.name
-        fields_string = ""
-        row_index=0
-        for field in self.fields:
-            checked=self.find_colour(field)
-            if row_index == 0:
-                fields_string = fields_string + "<tr>"
-            fields_string = fields_string + field_template.render(WORD=field.word, WORD_ID=field.word_id, PLAYER=self.name, GAME=self.Game.name, CHECKED=checked)
-            if row_index == self.row_length-1:
-                fields_string = fields_string + "</tr>\n"
-                row_index=0
-            else:
-                row_index += 1
+        fields_string = self.render_fields()
+        if self.Game.winner:
+            fields_string = fields_string + self.render_fields(self.Game.winner)
         tmpl = self.env.get_template('slice.j2')
         url=urlparse(cherrypy.url())
         WEBSOCKET = "%s/%s/subscribe" %(url.netloc, self.Game.name)
@@ -60,6 +51,27 @@ class Slice():
                     return "me"
             return "enemy"
         return "none"
+
+    def render_fields(self, winner=None):
+        fields_string = ""
+        row_index=0
+        if winner:
+            fields=self.Game.slices[winner.name]
+            player=winner.name
+        else:
+            fields=self.fields
+            player=self.name
+        for field in fields:
+            checked=self.find_colour(field)
+            if row_index == 0:
+                fields_string = fields_string + "<tr>"
+            fields_string = fields_string + field_template.render(WORD=field.word, WORD_ID=field.word_id, PLAYER=player, GAME=self.Game.name, CHECKED=checked)
+            if row_index == self.row_length-1:
+                fields_string = fields_string + "</tr>\n"
+                row_index=0
+            else:
+                row_index += 1
+        return fields_string
 
     def find_field(self):
         field_found=False

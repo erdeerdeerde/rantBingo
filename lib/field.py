@@ -12,6 +12,7 @@ class Field():
     def check_field(self, player):
         if not player in self.checker:
             self.checker.append(player)
+            self.word = self.word + "\n" + player.name
         else:
             return
         self.add_points(player)
