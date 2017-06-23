@@ -44,7 +44,8 @@ class Slice():
         WEBSOCKET = "%s/%s/subscribe" %(url.netloc, self.Game.name)
         STATS=""
         for Slice in self.Game.slices.values():
-            STATS = STATS + "%s: %s" %(Slice.name, Slice.score)
+            STATS = STATS + "%s: %s<br>" %(Slice.name, Slice.score)
+        STATS = STATS.strip("<br>")
         return tmpl.render(GAME=self.Game.name, WELCOME_TEXT=WELCOME_TEXT, PLAYER=self.name, FIELDS=fields_string, WEBSOCKET=WEBSOCKET, STATS=STATS)
 
     def find_colour(self, field):
