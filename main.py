@@ -204,6 +204,7 @@ class Server(object):
 
 
 cherrypy.config.update({'server.socket_port': 9090,
+                        'server.socket_host': '0.0.0.0',
                         'autoreload.on': True,
                         'server.show_tracebacks': True,  # disable in production, enable for debugging
                         'tools.sessions.on': True,
