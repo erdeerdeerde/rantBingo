@@ -42,7 +42,10 @@ class Slice():
         tmpl = self.env.get_template('slice.j2')
         url=urlparse(cherrypy.url())
         WEBSOCKET = "%s/%s/subscribe" %(url.netloc, self.Game.name)
-        return tmpl.render(GAME=self.Game.name, WELCOME_TEXT=WELCOME_TEXT, PLAYER=self.name, FIELDS=fields_string, WEBSOCKET = WEBSOCKET)
+        STATS=""
+        for Slice in self.Game.slices.values():
+            STATS = STATS + "%s: %s" %(Slice.name, Slice.score)
+        return tmpl.render(GAME=self.Game.name, WELCOME_TEXT=WELCOME_TEXT, PLAYER=self.name, FIELDS=fields_string, WEBSOCKET=WEBSOCKET, STATS=STATS)
 
     def find_colour(self, field):
         if len(field.checker) > 0:
