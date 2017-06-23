@@ -12,7 +12,7 @@ class Field():
     def check_field(self, player):
         if not player in self.checker:
             self.checker.append(player)
-            self.word = self.word + "\n" + player.name
+            self.word = self.word + "\n#" + player.name
         else:
             return
         self.add_points(player)
@@ -24,7 +24,7 @@ class Field():
 
     def add_points(self, player):
         position=self.checker.index(player)
-        Slice=self.Game.slices[player]
+        Slice=self.Game.slices[player.name]
         Slice.score += 5-position
 
     def broadcast_change(self, everyone=False):

@@ -36,9 +36,9 @@ class Slice():
         else:
             field_template = self.env.get_template('field.j2')
             WELCOME_TEXT=self.name
-        fields_string = self.render_fields()
+        fields_string = self.render_fields(field_template)
         if self.Game.winner:
-            fields_string = fields_string + self.render_fields(self.Game.winner)
+            fields_string = fields_string + self.render_fields(field_template, self.Game.winner)
         tmpl = self.env.get_template('slice.j2')
         url=urlparse(cherrypy.url())
         WEBSOCKET = "%s/%s/subscribe" %(url.netloc, self.Game.name)
@@ -52,7 +52,7 @@ class Slice():
             return "enemy"
         return "none"
 
-    def render_fields(self, winner=None):
+    def render_fields(self, field_template, winner=None):
         fields_string = ""
         row_index=0
         if winner:
