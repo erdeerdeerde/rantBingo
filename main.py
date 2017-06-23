@@ -209,7 +209,7 @@ cherrypy.config.update({'server.socket_port': 9090,
                         'server.show_tracebacks': True,  # disable in production, enable for debugging
                         'tools.sessions.on': True,
                         'tools.sessions.secure': False,   # enable in production, disable for debugging
-                        'tools.sessions.timeout': 60,
+                        'tools.sessions.timeout': 86400, # set session timeout to 1 day
                         'tools.sessions.httponly': True
                         })
 
