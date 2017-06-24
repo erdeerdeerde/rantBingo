@@ -28,16 +28,14 @@
             if (heartbeat_interval === null) {
                 missed_heartbeats = 0;
                 heartbeat_interval = setInterval(function() {
-                    try {
-                        missed_heartbeats++;    // this gets resetted to zero whenever a pong is received from the server
-                        if (missed_heartbeats >= 4)
-                            throw new Error("Too many missed heartbeats.");
-                        websocket.send(heartbeat_msg_send);
-                    } catch(e) {
+                    missed_heartbeats++;    // this gets resetted to zero whenever a pong is received from the server
+                    if (missed_heartbeats >= 4) {
                         clearInterval(heartbeat_interval);
                         heartbeat_interval = null;
-                        console.warn("Closing WebSocket connection. Reason: " + e.message);
+                        console.warn("Closing WebSocket connection. Reason: Too many missed heartbeats.");
                         websocket.close();
+                    } else {
+                        websocket.send(heartbeat_msg_send);
                     }
                 }, 5000);
             }
